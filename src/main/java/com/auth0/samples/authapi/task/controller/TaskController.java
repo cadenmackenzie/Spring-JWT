@@ -6,6 +6,8 @@ import com.auth0.samples.authapi.task.repository.TaskRepository;
 import com.auth0.samples.authapi.task.service.ResponseService;
 import com.auth0.samples.authapi.task.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,45 +30,48 @@ public class TaskController {
 	@Autowired
 	TaskRepository taskRepository;
 
+	Response response = new Response();
+
 	@RequestMapping(method = RequestMethod.POST)
-	public Response addTask(@RequestBody Task task, HttpServletRequest request) {
+	public ResponseEntity addTask(@RequestBody Task task, HttpServletRequest request) {
 		if (taskService.sanityCheckValidTaskDescription(task)) {
 			taskService.taskSetTaskGiver(task, request);
-			return responseService.responseSuccess(taskRepository.save(task));
+			response = responseService.responseSuccess(taskRepository.save(task), 201);
 		}
-		return responseService.responseFailure("Invalid task description");
+		else {
+			response = responseService.responseFailure("Invalid task description", 400);
+		}
+		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	public Response getTasks() {
-		return responseService.responseSuccess(taskService.getTasks());
+	public ResponseEntity getTasks() {
+		response = responseService.responseSuccess(taskService.getTasks(),200);
+		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
 	}
 
 	@RequestMapping(value = {"/{id}"}, method = RequestMethod.PUT)
-	public Response editTask(@PathVariable long id, @RequestBody Task task) {
+	public ResponseEntity editTask(@PathVariable long id, @RequestBody Task task) {
 		if (!taskService.sanityCheckTaskExist(id)) {
-			return responseService.responseFailure("No task with the given id");
+			response = responseService.responseFailure("No task with the given id",400);
 		}
 		if (!taskService.sanityCheckValidTaskDescription(task)) {
-			return responseService.responseFailure("Invalid task description");
+			response =  responseService.responseFailure("Invalid task description",400);
 		}
-		return responseService.responseSuccess(taskService.editTask(id, task));
+		else {
+			response =  responseService.responseSuccess(taskService.editTask(id, task),200);
+		}
+		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
 	}
 
-	// Ryan please show me with ResponseEntity<> how it would look like and how it differs in term of result
-	// is that where you want to go with try/catch?
 	@RequestMapping(value = {"/{id}"}, method = RequestMethod.DELETE)
-	public Response deleteTask(@PathVariable long id) {
-		try {
+	public ResponseEntity deleteTask(@PathVariable long id) {
 			if (!taskService.sanityCheckTaskExist(id)) {
-				return responseService.responseFailure("No task with the given id");
+				response = responseService.responseFailure("No task with the given id", 418);
 			}
-			return responseService.responseSuccess(taskService.deleteTask(id));
-		}
-		catch (Exception x) {
-			return responseService.responseFailure(x.toString());
-		}
-
+			else {
+				response = responseService.responseSuccess(taskService.deleteTask(id), 200);
+			}
+		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
 	}
 }
-

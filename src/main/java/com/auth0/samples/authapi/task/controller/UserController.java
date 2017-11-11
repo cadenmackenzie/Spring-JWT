@@ -6,6 +6,8 @@ import com.auth0.samples.authapi.task.repository.UserRepository;
 import com.auth0.samples.authapi.task.service.ResponseService;
 import com.auth0.samples.authapi.task.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.auth0.samples.authapi.task.model.AppUser;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,15 +32,19 @@ public class UserController {
 
 	// two sanity check, one for input, second to check it the username is already taken with proper message displaying
 	@RequestMapping(value = {"/signup"}, method = RequestMethod.POST)
-	public Response signUp (@RequestBody AppUser appUser) {
+	public ResponseEntity signUp (@RequestBody AppUser appUser) {
+	Response response = new Response();
 		if (!userService.sanityCheckGivenData(appUser)) {
-			return responseService.responseFailure("Data provided are invalid");
+			response = responseService.responseFailure("Invalid data given",418);
 		}
-		if (!userService.SanityCheckUserExist(appUser.getUsername())) {
-			return responseService.responseFailure("Username already exist");
+		else if (!userService.SanityCheckUserExist(appUser.getUsername())) {
+			response = responseService.responseFailure("The user exist already",418);
+			// error code 418 does not fit but I like it :D Tea somebody?
 		}
-		userService.signUp(appUser);
-		return responseService.responseSuccess(appUser);
+		else {
+			userService.signUp(appUser);
+			response = responseService.responseSuccess(appUser,201);
+		}
+	return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
 	}
 }
-

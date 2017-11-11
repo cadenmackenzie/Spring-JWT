@@ -24,6 +24,6 @@ public class TopController {
 	// wanted to make it nice and take the header and put it into a response but I can't control this endpoint sadly
 	@RequestMapping(value = {"/login"}, method = RequestMethod.POST)
 	public Response login() {
-		return responseService.responseFailure();
+		return responseService.responseFailure(400);
 	}
 }
