@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Created by Thomas Leruth on 11/9/17
  */
-
+// this class can be improved by removing logic and using Exception handling but it is time consuming and I think
+// that I can handle it
 //Class with the controllers for tasks, using sanity check and response giver, logic is in the services
 @RestController
 @RequestMapping("/tasks")

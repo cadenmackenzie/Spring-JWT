@@ -1,6 +1,8 @@
 package com.auth0.samples.authapi.task.controller;
 
 
+import com.auth0.samples.authapi.task.exception.InvalidInputException;
+import com.auth0.samples.authapi.task.exception.UsernameAlreadyTakenException;
 import com.auth0.samples.authapi.task.model.Response;
 import com.auth0.samples.authapi.task.service.ResponseService;
 import com.auth0.samples.authapi.task.service.UserService;
@@ -29,25 +31,17 @@ public class UserController {
 	ResponseService responseService;
 
 	// two sanity check, one for input, second to check it the username is already taken with proper message displaying
-	// one using exception handling and one using a custom responseHandler
-	// Ryan why is exception better? Because I can controll pre-made ones already?
-	// + the controller has less logic?
-	// Make CheckUserExist exception
+	// both using try/catch with Exception handler using ResponseEntity
+	// Ryan why is exception better? Because I can controll pre-made ones already + the controller has less logic?
 	@RequestMapping(value = {"/signup"}, method = RequestMethod.POST)
 	public ResponseEntity signUp (@RequestBody AppUser appUser) {
-	Response response = new Response();
-//		if (!userService.SanityCheckUserExist(appUser.getUsername())) {
-//			response = responseService.responseFailure("The user exist already",418);
-//			// error code 418 does not fit but I like it :D Tea somebody?
-//		}
 		try {
 			userService.signUp(appUser);
 		}
-		catch (InvalidInputException iE) {
-			throw iE;
+		catch (InvalidInputException | UsernameAlreadyTakenException eE) {
+			throw eE;
 		}
-
-		response = responseService.responseSuccess(appUser,201);
+		Response response = responseService.responseSuccess(appUser,201);
 		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
 	}
 }

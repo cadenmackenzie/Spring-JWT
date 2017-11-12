@@ -1,4 +1,4 @@
-package com.auth0.samples.authapi.task.controller;
+package com.auth0.samples.authapi.task.exception;
 
 import jdk.nashorn.internal.objects.annotations.Getter;
 
@@ -9,9 +9,11 @@ import jdk.nashorn.internal.objects.annotations.Getter;
 public class InvalidInputException extends RuntimeException {
 
 	private Object givenObject;
+	private String ExceptionName;
 
 	public InvalidInputException(Object givenObject) {
 		this.givenObject = givenObject;
+		this.ExceptionName = getClass().getSimpleName();
 	}
 
 	public Object getGivenObject() {
@@ -20,5 +22,13 @@ public class InvalidInputException extends RuntimeException {
 
 	public void setGivenObject(Object givenObject) {
 		this.givenObject = givenObject;
+	}
+
+	public String getExceptionName() {
+		return ExceptionName;
+	}
+
+	public void setExceptionName(String exceptionName) {
+		ExceptionName = exceptionName;
 	}
 }

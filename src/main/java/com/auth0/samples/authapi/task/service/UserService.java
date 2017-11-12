@@ -4,9 +4,9 @@ package com.auth0.samples.authapi.task.service;
  * Created by Thomas Leruth on 11/9/17
  */
 
-import com.auth0.samples.authapi.task.controller.InvalidInputException;
+import com.auth0.samples.authapi.task.exception.InvalidInputException;
+import com.auth0.samples.authapi.task.exception.UsernameAlreadyTakenException;
 import com.auth0.samples.authapi.task.model.AppUser;
-import com.auth0.samples.authapi.task.repository.TaskRepository;
 import com.auth0.samples.authapi.task.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class UserService implements UserDetailsService {
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
 
 	public UserService(UserRepository userRepository) {
 		this.userRepository = userRepository;
@@ -47,18 +47,21 @@ public class UserService implements UserDetailsService {
 		if (!sanityCheckGivenData(appUser)) {
 			throw new InvalidInputException(appUser);
 		}
+		if (!SanityCheckUserExist(appUser.getUsername())) {
+			throw new UsernameAlreadyTakenException(appUser);
+		}
 		appUser.setPassword(bCryptPasswordEncoder.encode(appUser.getPassword()));
 		userRepository.save(appUser);
 	}
 
-	public boolean SanityCheckUserExist(String username)  {
+	private boolean SanityCheckUserExist(String username)  {
 		if (userRepository.findByUsername(username) == null) {
 			return true;
 		}
 		return false;
 	}
 
-	public boolean sanityCheckGivenData(AppUser appuser) {
+	private boolean sanityCheckGivenData(AppUser appuser) {
 		if (appuser.getUsername() == null || appuser.getUsername().equals("") ||
 		appuser.getPassword().equals("") || appuser.getPassword() == null) {
 			return false;
