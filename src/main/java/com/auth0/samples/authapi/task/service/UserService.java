@@ -4,6 +4,7 @@ package com.auth0.samples.authapi.task.service;
  * Created by Thomas Leruth on 11/9/17
  */
 
+import com.auth0.samples.authapi.task.controller.InvalidInputException;
 import com.auth0.samples.authapi.task.model.AppUser;
 import com.auth0.samples.authapi.task.repository.TaskRepository;
 import com.auth0.samples.authapi.task.repository.UserRepository;
@@ -43,6 +44,9 @@ public class UserService implements UserDetailsService {
 	}
 
 	public void signUp(AppUser appUser) {
+		if (!sanityCheckGivenData(appUser)) {
+			throw new InvalidInputException(appUser);
+		}
 		appUser.setPassword(bCryptPasswordEncoder.encode(appUser.getPassword()));
 		userRepository.save(appUser);
 	}

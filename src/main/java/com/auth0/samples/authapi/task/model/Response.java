@@ -5,7 +5,7 @@ package com.auth0.samples.authapi.task.model;
  * Created by Thomas Leruth on 11/9/17
  */
 
-// Used for response from controllers
+// Used for proper response from controllers
 public class Response {
 
 	String message;

@@ -2,13 +2,11 @@ package com.auth0.samples.authapi.task.controller;
 
 
 import com.auth0.samples.authapi.task.model.Response;
-import com.auth0.samples.authapi.task.repository.UserRepository;
 import com.auth0.samples.authapi.task.service.ResponseService;
 import com.auth0.samples.authapi.task.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.auth0.samples.authapi.task.model.AppUser;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,20 +29,25 @@ public class UserController {
 	ResponseService responseService;
 
 	// two sanity check, one for input, second to check it the username is already taken with proper message displaying
+	// one using exception handling and one using a custom responseHandler
+	// Ryan why is exception better? Because I can controll pre-made ones already?
+	// + the controller has less logic?
+	// Make CheckUserExist exception
 	@RequestMapping(value = {"/signup"}, method = RequestMethod.POST)
 	public ResponseEntity signUp (@RequestBody AppUser appUser) {
 	Response response = new Response();
-		if (!userService.sanityCheckGivenData(appUser)) {
-			response = responseService.responseFailure("Invalid data given",418);
-		}
-		else if (!userService.SanityCheckUserExist(appUser.getUsername())) {
-			response = responseService.responseFailure("The user exist already",418);
-			// error code 418 does not fit but I like it :D Tea somebody?
-		}
-		else {
+//		if (!userService.SanityCheckUserExist(appUser.getUsername())) {
+//			response = responseService.responseFailure("The user exist already",418);
+//			// error code 418 does not fit but I like it :D Tea somebody?
+//		}
+		try {
 			userService.signUp(appUser);
-			response = responseService.responseSuccess(appUser,201);
 		}
-	return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+		catch (InvalidInputException iE) {
+			throw iE;
+		}
+
+		response = responseService.responseSuccess(appUser,201);
+		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
 	}
 }
