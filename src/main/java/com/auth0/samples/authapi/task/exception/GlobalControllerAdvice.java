@@ -1,4 +1,4 @@
-package com.auth0.samples.authapi.task.controller;
+package com.auth0.samples.authapi.task.exception;
 
 import com.auth0.samples.authapi.task.exception.InvalidInputException;
 import com.auth0.samples.authapi.task.exception.UsernameAlreadyTakenException;
