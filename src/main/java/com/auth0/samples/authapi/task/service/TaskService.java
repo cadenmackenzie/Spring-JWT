@@ -17,7 +17,10 @@ import static com.auth0.samples.authapi.task.util.SecurityConstant.*;
 /**
  * Created by Thomas Leruth on 11/9/17
  */
-// all the logics for the controllers
+
+/**
+ * Main services powering the task endpoint
+ */
 @Service
 public class TaskService {
 
@@ -30,7 +33,12 @@ public class TaskService {
 	@Autowired
 	UserRepository userRepository;
 
-	// get the username from the JWT and set it as the username in the task model
+
+	/**
+	 * Method to read from the JWT the task giver and set it in the task POJO
+	 * @param task task given
+	 * @param request info from http
+	 */
 	public void taskSetTaskGiver(Task task, HttpServletRequest request) {
 		task
 				.setTaskGiver(Jwts.parser()
@@ -40,6 +48,10 @@ public class TaskService {
 						.getSubject());
 	}
 
+	/**
+	 * Get all tasks
+	 * @return
+	 */
 	public List<Task> getTasks() {
 		return taskRepository.findAll();
 	}
@@ -50,12 +62,22 @@ public class TaskService {
 		return taskRepository.save(taskModified);
 	}
 
+	/**
+	 * delete selected task
+	 * @param id
+	 * @return
+	 */
 	public Task deleteTask(long id) {
 		Task deletedTask = taskRepository.findOne(id);
 		taskRepository.delete(id);
 		return deletedTask;
 	}
 
+	/**
+	 * Sanity check to see if given ID exist
+	 * @param id
+	 * @return
+	 */
 	public boolean sanityCheckTaskExist(long id) {
 		if (taskRepository.findOne(id) != null) {
 			return true;
@@ -63,6 +85,11 @@ public class TaskService {
 		return false;
 	}
 
+	/**
+	 * Sanity check for valid description
+	 * @param task
+	 * @return
+	 */
 	public boolean sanityCheckValidTaskDescription(Task task) {
 		if (task.getDescription() == null || task.getDescription().equals("")) {
 			return false;

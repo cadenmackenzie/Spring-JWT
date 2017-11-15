@@ -9,6 +9,10 @@ import java.time.LocalDateTime;
 /**
  * Created by Thomas Leruth on 11/11/17 modelled worked from brunocleite@Github
  */
+
+/**
+ * Custom Response Object for API custom error
+ */
 @JsonPropertyOrder({"timestamp", "status", "exceptionName", "userMessage", "givenObject"})
 public class ApiErrorResponse {
 

@@ -4,7 +4,9 @@ package com.auth0.samples.authapi.task.util;
  * Created by Thomas Leruth on 11/9/17
  */
 
-// Simple constants to use for the JWT
+/**
+ * Constant for JWT
+ */
 public class SecurityConstant {
 	public static final String SECRET = "SecretKeyToGenJWTs";
 	public static final long EXPIRATION_TIME = 864_000_000; // 10 days

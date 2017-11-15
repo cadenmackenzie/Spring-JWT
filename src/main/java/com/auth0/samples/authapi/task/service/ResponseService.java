@@ -14,6 +14,12 @@ public class ResponseService {
 
 	Response response = new Response();
 
+	/**
+	 * The service powering responses object
+	 * @param object Very broad as I want to be able to take any object as body
+	 * @param statusCode the code to set the page on
+	 * @return Return the modified response with more info
+	 */
 	public Response responseSuccess(Object object, int statusCode){
 		response.setStatus(statusCode);
 		response.setMessage(HttpStatus.valueOf(statusCode).getReasonPhrase());
@@ -21,6 +27,11 @@ public class ResponseService {
 		return response;
 	}
 
+	/**
+	 * Similar as above but withotu object
+	 * @param statusCode
+	 * @return
+	 */
 	public Response responseFailure(int statusCode) {
 		response.setStatus(statusCode);
 		response.setMessage(HttpStatus.valueOf(statusCode).getReasonPhrase());
@@ -28,6 +39,12 @@ public class ResponseService {
 		return response;
 	}
 
+	/**
+	 * Overloaded constructor in case I want to return a specific message
+	 * @param message
+	 * @param statusCode
+	 * @return
+	 */
 	public Response responseFailure(String message, int statusCode) {
 		response.setStatus(statusCode);
 		response.setMessage(message);

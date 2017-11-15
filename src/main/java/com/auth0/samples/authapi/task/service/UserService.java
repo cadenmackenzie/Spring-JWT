@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 
 import static java.util.Collections.emptyList;
 
-//logic for the controllers
+/**
+ * Logic for the /user controller
+ */
 @Service
 public class UserService implements UserDetailsService {
 
@@ -34,6 +36,13 @@ public class UserService implements UserDetailsService {
 	}
 
 	//check if user exists and return its details if so
+
+	/**
+	 * Check if the user exists and return its details if so
+	 * @param username the username given
+	 * @return The use details
+	 * @throws UsernameNotFoundException
+	 */
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		AppUser appUser = userRepository.findByUsername(username);
@@ -43,6 +52,10 @@ public class UserService implements UserDetailsService {
 		return new User(appUser.getUsername(), appUser.getPassword(), emptyList());
 	}
 
+	/**
+	 * Sign up service with the custom exceptions
+	 * @param appUser
+	 */
 	public void signUp(AppUser appUser) {
 		if (!sanityCheckGivenData(appUser)) {
 			throw new InvalidInputException(appUser);
@@ -54,6 +67,11 @@ public class UserService implements UserDetailsService {
 		userRepository.save(appUser);
 	}
 
+	/**
+	 * Sanity check to see if the username already exist
+	 * @param username
+	 * @return
+	 */
 	private boolean SanityCheckUserExist(String username)  {
 		if (userRepository.findByUsername(username) == null) {
 			return true;
@@ -61,6 +79,11 @@ public class UserService implements UserDetailsService {
 		return false;
 	}
 
+	/**
+	 * Sanity check to see if the data given are good
+	 * @param appuser
+	 * @return
+	 */
 	private boolean sanityCheckGivenData(AppUser appuser) {
 		if (appuser.getUsername() == null || appuser.getUsername().equals("") ||
 		appuser.getPassword().equals("") || appuser.getPassword() == null) {

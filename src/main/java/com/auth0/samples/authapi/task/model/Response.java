@@ -5,12 +5,15 @@ package com.auth0.samples.authapi.task.model;
  * Created by Thomas Leruth on 11/9/17
  */
 
-// Used for proper response from controllers
+/**
+ * Custom Response Object for non error response
+ */
 public class Response {
 
 	String message;
 	int status;
 	Object object;
+	Object error;
 
 	public String getMessage() {
 		return message;

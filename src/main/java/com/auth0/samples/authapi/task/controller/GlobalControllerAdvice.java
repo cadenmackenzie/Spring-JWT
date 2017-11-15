@@ -14,10 +14,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Created by Thomas Leruth on 11/11/17
  */
 
-//can set the targeting basepackage, annotation, etc, or just anything
+/**
+ * Class to globally catch the error thrown by the controller
+ */
 @ControllerAdvice
 public class GlobalControllerAdvice {
 
+	/**
+	 * Advice for handling custom InvalidInputException and setting up the body of that error thanks to "@ResponseBody"
+	 *
+	 * @param iE The exception received from the service
+	 * @return ResponseEntity showing an custom ApiErrorObject + correct response code
+	 */
 	@ResponseBody
 	@ExceptionHandler(InvalidInputException.class)
 	public ResponseEntity InvalidInputHandler(InvalidInputException iE) {
@@ -27,6 +35,11 @@ public class GlobalControllerAdvice {
 		return new ResponseEntity<>(aE, hS);
 	}
 
+	/**
+	 * Similar for UsernameAlreadyTakenException
+	 * @param uE The exception received from the service
+	 * @return ReponseEntity
+	 */
 	@ResponseBody
 	@ExceptionHandler(UsernameAlreadyTakenException.class)
 	public ResponseEntity UsernameAlreadyTakenHandler(UsernameAlreadyTakenException uE) {

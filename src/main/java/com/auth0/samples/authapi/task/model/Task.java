@@ -9,7 +9,9 @@ import javax.persistence.Id;
  * Created by Thomas Leruth on 11/9/17
  */
 
-// Same as Appuser in the logic
+/**
+ * Pojo class for the user being added to the in memory database
+ */
 @Entity
 public class Task {
 	@Id

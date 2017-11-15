@@ -7,6 +7,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 /**
  * Created by Thomas Leruth on 11/9/17
  */
+
+/**
+ * Class to create a bean for the "imported" password encoder
+ */
 @Configuration
 public class EncoderConfig {
 

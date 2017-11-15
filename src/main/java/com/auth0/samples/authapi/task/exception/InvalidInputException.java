@@ -5,7 +5,10 @@ import jdk.nashorn.internal.objects.annotations.Getter;
 /**
  * Created by Thomas Leruth on 11/11/17
  */
-// to pass the object
+
+/**
+ * Custom Exception when the the given Input is not as expected (RunTimeException)
+ */
 public class InvalidInputException extends RuntimeException {
 
 	private Object givenObject;

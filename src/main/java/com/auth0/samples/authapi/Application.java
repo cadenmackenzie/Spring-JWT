@@ -3,7 +3,9 @@ package com.auth0.samples.authapi;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-// so little yet so powerful
+/**
+ * So little yet so powerful
+ */
 @SpringBootApplication
 public class Application {
 

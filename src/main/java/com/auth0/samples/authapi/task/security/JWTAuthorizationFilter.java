@@ -19,7 +19,9 @@ import java.util.ArrayList;
 
 import static com.auth0.samples.authapi.task.util.SecurityConstant.*;
 
-// JWT reader
+/**
+ * Class reading the JWT
+ */
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
 	public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
@@ -27,6 +29,15 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 	}
 
 	// set that ok to check pages once it gets the OK from the GetAuthentication
+
+	/**
+	 * Set the ok to check pages once it gets the OK from GetAuthentication
+	 * @param req info from the http request
+	 * @param res info from the http request
+	 * @param chain the chain of filters being invoked
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@Override
 	protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
 			throws IOException, ServletException {
@@ -44,7 +55,11 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 		chain.doFilter(req, res);
 	}
 
-	// read and check JWT from header
+	/**
+	 * Read the JWT and set the OK if valid
+	 * @param request info from the http request
+	 * @return class with username and password and the status of the authentication
+	 */
 	private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
 		String token = request.getHeader(HEADER_STRING);
 		if (token != null) {

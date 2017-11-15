@@ -8,7 +8,10 @@ import javax.persistence.Id;
 /**
  * Created by Thomas Leruth on 11/9/17
  */
-//Entity as coded to database, id is not set as it is auto incremented
+
+/**
+ * Pojo class the tasks being added to the in memory database
+ */
 @Entity
 public class AppUser {
 

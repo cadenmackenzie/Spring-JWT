@@ -21,6 +21,9 @@ import static com.auth0.samples.authapi.task.util.SecurityConstant.SIGN_UP_URL;
  * Created by Thomas Leruth on 11/9/17
  */
 
+/**
+ * Class securing the end points
+ */
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
@@ -36,6 +39,12 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 	}
 
 	// method to lock the page that cannot be access without valid JWT
+
+	/**
+	 * Method locking all the page without a valid JWT (except login)
+	 * @param http the security for the http requests
+	 * @throws Exception
+	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
@@ -43,20 +52,29 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
 				.anyRequest().authenticated()
 				.and()
+				.formLogin().defaultSuccessUrl("/hello")
+				.and()
 				.addFilter(new JWTAuthentificationFilter(authenticationManager()))
 				.addFilter(new JWTAuthorizationFilter(authenticationManager()))
 				// this disables session creation on Spring Security
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 
-	// set proper password encoding
+	/**
+	 * Create the proper password encoding. DO NOT EVER SAVE WITHOUT ENCODING...
+	 * @param auth in memory authentication
+	 * @throws Exception
+	 */
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
 	}
 
-	// not sure what we do with this RYAAAAN
-	// can we talk about cors?
+
+	/**
+	 * Configuring cross origin ressource sharing opened because I am friendly :)
+	 * @return
+	 */
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

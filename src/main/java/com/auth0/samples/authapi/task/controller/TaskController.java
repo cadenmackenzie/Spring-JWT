@@ -15,9 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Created by Thomas Leruth on 11/9/17
  */
-// this class can be improved by removing logic and using Exception handling but it is time consuming and I think
-// that I can handle it
-//Class with the controllers for tasks, using sanity check and response giver, logic is in the services
+
+/**
+ *  Controllers for the /task end points
+ */
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
@@ -31,10 +32,17 @@ public class TaskController {
 	@Autowired
 	TaskRepository taskRepository;
 
-	Response response = new Response();
+	Response response;// = new Response();
 
+	/**
+	 * Post Controller to make a new task using a sanity check directly
+	 * @param task POJO class
+	 * @param request to get the JWT token (to use for setting the task giver)
+	 * @return ResponseEntity which allows the set HTTP response code correctly and returning the posted object
+	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity addTask(@RequestBody Task task, HttpServletRequest request) {
+		response = new Response();
 		if (taskService.sanityCheckValidTaskDescription(task)) {
 			taskService.taskSetTaskGiver(task, request);
 			response = responseService.responseSuccess(taskRepository.save(task), 201);
@@ -45,12 +53,22 @@ public class TaskController {
 		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
 	}
 
+	/**
+	 * Similar as above return the list of tasks
+	 * @return ResponseEntity
+	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity getTasks() {
 		response = responseService.responseSuccess(taskService.getTasks(),200);
 		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
 	}
 
+	/**
+	 * Put Controller to mofify a specific task using sanity check
+	 * @param id id of the task to change
+	 * @param task new task to use as modifier
+	 * @return ResponseEntity
+	 */
 	@RequestMapping(value = {"/{id}"}, method = RequestMethod.PUT)
 	public ResponseEntity editTask(@PathVariable long id, @RequestBody Task task) {
 		if (!taskService.sanityCheckTaskExist(id)) {
@@ -65,6 +83,11 @@ public class TaskController {
 		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
 	}
 
+	/**
+	 * Delete Controller to delete a specific task
+	 * @param id id of the task to delete
+	 * @return ResponseEntity
+	 */
 	@RequestMapping(value = {"/{id}"}, method = RequestMethod.DELETE)
 	public ResponseEntity deleteTask(@PathVariable long id) {
 			if (!taskService.sanityCheckTaskExist(id)) {
